@@ -209,7 +209,7 @@ it waits for the next connect.
             else:
                 sys.stdout.write('Waiting for connection on {}...\n'.format(args.localport))
                 client_socket, addr = srv.accept()
-                sys.stdout.write('Connected by {}\n'.format(addr))
+                sys.stdout.write('Client connected {}\n'.format(addr))
                 # More quickly detect bad clients who quit without closing the
                 # connection: After 1 second of idle, start sending TCP keep-alive
                 # packets every 1 second. If 3 consecutive keep-alive packets
