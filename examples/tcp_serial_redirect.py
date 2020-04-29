@@ -29,8 +29,8 @@ class StreamToLogger(object):
 logging.basicConfig(
 level=logging.DEBUG,
 format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
-filename="out.log",
-filemode='a'
+#filename="out.log",
+#filemode='a'
 )
 
 stdout_logger = logging.getLogger('STDOUT')
@@ -53,6 +53,7 @@ class SerialToNet(serial.threaded.Protocol):
     def data_received(self, data):
         if self.socket is not None:
             self.socket.sendall(data)
+            sys.stderr.write('Local Ser to Nwrk: {}\n'.format(data))
 
 
 if __name__ == '__main__':  # noqa
@@ -172,7 +173,7 @@ it waits for the next connect.
         ser.dtr = args.dtr
 
     if not args.quiet:
-        sys.stderr.write(
+        sys.stdout.write(
             '--- TCP/IP to Serial redirect on {p.name}  {p.baudrate},{p.bytesize},{p.parity},{p.stopbits} ---\n'
             '--- type Ctrl-C / BREAK to quit\n'.format(p=ser))
 
@@ -232,6 +233,7 @@ it waits for the next connect.
                         if not data:
                             break
                         ser.write(data)                 # get a bunch of bytes and send them
+                        sys.stderr.write('Nwrk to Local Ser: {}\n'.format(data))
                     except socket.error as msg:
                         if args.develop:
                             raise
