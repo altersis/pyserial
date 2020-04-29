@@ -51,8 +51,8 @@ class SerialToNet(serial.threaded.Protocol):
     def data_received(self, data):
         if self.socket is not None:
             self.socket.sendall(data)
-            sys.stdout.write('Local Ser to Nwrk: {}\n'.format(data))
-
+            if args.develop:
+                sys.stdout.write('Local Ser to Nwrk: {}\n'.format(data))
 
 if __name__ == '__main__':  # noqa
     import argparse
@@ -231,7 +231,8 @@ it waits for the next connect.
                         if not data:
                             break
                         ser.write(data)                 # get a bunch of bytes and send them
-                        sys.stdout.write('Nwrk to Local Ser: {}\n'.format(data))
+                        if args.develop:
+                            sys.stdout.write('Nwrk to Local Ser: {}\n'.format(data))
                     except socket.error as msg:
                         if args.develop:
                             raise
