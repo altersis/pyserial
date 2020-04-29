@@ -29,8 +29,6 @@ class StreamToLogger(object):
 logging.basicConfig(
 level=logging.DEBUG,
 format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
-#filename="out.log",
-#filemode='a'
 )
 
 stdout_logger = logging.getLogger('STDOUT')
@@ -53,7 +51,7 @@ class SerialToNet(serial.threaded.Protocol):
     def data_received(self, data):
         if self.socket is not None:
             self.socket.sendall(data)
-            sys.stderr.write('Local Ser to Nwrk: {}\n'.format(data))
+            sys.stdout.write('Local Ser to Nwrk: {}\n'.format(data))
 
 
 if __name__ == '__main__':  # noqa
@@ -197,7 +195,7 @@ it waits for the next connect.
         while True:
             if args.client:
                 host, port = args.client.split(':')
-                sys.stderr.write("Opening connection to {}:{}...\n".format(host, port))
+                sys.stdout.write("Opening connection to {}:{}...\n".format(host, port))
                 client_socket = socket.socket()
                 try:
                     client_socket.connect((host, int(port)))
@@ -205,11 +203,11 @@ it waits for the next connect.
                     sys.stderr.write('WARNING: {}\n'.format(msg))
                     time.sleep(5)  # intentional delay on reconnection as client
                     continue
-                sys.stderr.write('Connected\n')
+                sys.stdout.write('Connected\n')
                 client_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
                 #~ client_socket.settimeout(5)
             else:
-                sys.stderr.write('Waiting for connection on {}...\n'.format(args.localport))
+                sys.stdout.write('Waiting for connection on {}...\n'.format(args.localport))
                 client_socket, addr = srv.accept()
                 sys.stderr.write('Connected by {}\n'.format(addr))
                 # More quickly detect bad clients who quit without closing the
@@ -233,7 +231,7 @@ it waits for the next connect.
                         if not data:
                             break
                         ser.write(data)                 # get a bunch of bytes and send them
-                        sys.stderr.write('Nwrk to Local Ser: {}\n'.format(data))
+                        sys.stdout.write('Nwrk to Local Ser: {}\n'.format(data))
                     except socket.error as msg:
                         if args.develop:
                             raise
@@ -249,7 +247,7 @@ it waits for the next connect.
                 sys.stderr.write('ERROR: {}\n'.format(msg))
             finally:
                 ser_to_net.socket = None
-                sys.stderr.write('Disconnected\n')
+                sys.stdout.write('Disconnected\n')
                 client_socket.close()
                 if args.client and not intentional_exit:
                     time.sleep(5)  # intentional delay on reconnection as client
